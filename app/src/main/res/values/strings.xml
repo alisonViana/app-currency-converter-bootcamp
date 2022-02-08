@@ -3,5 +3,9 @@
 
     <!-- Labels -->
     <string name="label_ok">OK</string>
+    <string name="label_value">Valor</string>
+    <string name="label_convert_from">Converter de:</string>
+    <string name="label_convert_to">Para:</string>
+    <string name="label_convert">Converter</string>
 
 </resources>
