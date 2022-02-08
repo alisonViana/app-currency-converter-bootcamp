@@ -2,11 +2,47 @@ package br.com.dio.currencyconverter.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import br.com.dio.currencyconverter.R
+import android.util.Log
+import android.widget.ArrayAdapter
+import androidx.core.widget.doAfterTextChanged
+import br.com.dio.currencyconverter.core.extensions.text
+import br.com.dio.currencyconverter.data.model.Coin
+
+import br.com.dio.currencyconverter.databinding.ActivityMainBinding
+import br.com.dio.currencyconverter.presentation.MainViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
+
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val viewModel by viewModel<MainViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
+
+        setAdapters()
+        setListeners()
     }
+
+    private fun setAdapters() {
+        val list = Coin.values()
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+
+        binding.tvFrom.setAdapter(adapter)
+        binding.tvTo.setAdapter(adapter)
+
+        binding.tvFrom.setText(Coin.USD.name, false)
+        binding.tvTo.setText(Coin.BRL.name, false)
+    }
+
+    private fun setListeners() {
+        binding.tilValue.editText?.doAfterTextChanged {
+            binding.btnConvert.isEnabled = binding.tilValue.text.isNotBlank()
+        }
+        binding.btnConvert.setOnClickListener {
+            Log.i("MyTag", binding.tilValue.text)
+        }
+    }
+
 }
