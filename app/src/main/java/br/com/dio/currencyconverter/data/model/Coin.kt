@@ -1,4 +1,4 @@
-package br.com.dio.currencyconverter.data
+package br.com.dio.currencyconverter.data.model
 
 enum class Coin(name: String) {
     BTC("Bitcoin"),
