@@ -1,7 +1,8 @@
 package br.com.dio.currencyconverter.data.di
 
 import android.util.Log
-import androidx.annotation.RestrictTo
+import br.com.dio.currencyconverter.data.repositories.CoinRepository
+import br.com.dio.currencyconverter.data.repositories.CoinRepositoryImpl
 import br.com.dio.currencyconverter.data.services.AwesomeService
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -17,7 +18,7 @@ object DataModule {
     private const val HTTP_TAG = "OKHttp"
 
     fun load() {
-        loadKoinModules(networkModules())
+        loadKoinModules(networkModules() + repositoryModules())
     }
 
     // single - o koin devolve sempre a mesma instância
@@ -46,6 +47,12 @@ object DataModule {
             single {
                 createService<AwesomeService>(get(), get())
             }
+        }
+    }
+
+    private fun repositoryModules(): Module {
+        return module {
+            single<CoinRepository> { CoinRepositoryImpl(get()) }
         }
     }
 
