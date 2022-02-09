@@ -6,12 +6,12 @@ data class ExchangeResponseValue (
     val code: String,
     val codein: String,
     val name: String,
-    val high: String,
-    val low: String,
-    val varBid: String,
-    val pctChange: String,
-    val bid: String,
-    val ask: String,
+    val high: Double,
+    val low: Double,
+    val varBid: Double,
+    val pctChange: Double,
+    val bid: Double,
+    val ask: Double,
     val timestamp: String,
     val createDate: String
 )

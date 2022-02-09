@@ -6,5 +6,4 @@ import kotlinx.coroutines.flow.Flow
 interface CoinRepository {
 
     suspend fun getExchangeValues(coins: String): Flow<ExchangeResponseValue>
-
 }

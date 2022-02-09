@@ -8,5 +8,4 @@ interface AwesomeService {
 
     @GET("/json/last/{coins}")
     suspend fun exchangeValue(@Path("coins") coins: String): ExchangeResponse
-
 }

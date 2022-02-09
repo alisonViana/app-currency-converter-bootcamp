@@ -2,14 +2,10 @@ package br.com.dio.currencyconverter.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.core.widget.doAfterTextChanged
-import br.com.dio.currencyconverter.core.extensions.createDialog
-import br.com.dio.currencyconverter.core.extensions.createProgressDialog
-import br.com.dio.currencyconverter.core.extensions.text
+import br.com.dio.currencyconverter.core.extensions.*
 import br.com.dio.currencyconverter.data.model.Coin
-
 import br.com.dio.currencyconverter.databinding.ActivityMainBinding
 import br.com.dio.currencyconverter.presentation.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -26,23 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         setAdapters()
         setListeners()
-
-        viewModel.getExchangeValues("USD-BRL")
-        viewModel.state.observe(this){
-            when (it) {
-                MainViewModel.State.Loading -> loadingDialog.show()
-                is MainViewModel.State.Error -> {
-                    loadingDialog.dismiss()
-                    createDialog {
-                        setMessage(it.error.message)
-                    }.show()
-                }
-                is MainViewModel.State.Success -> {
-                    loadingDialog.dismiss()
-                    Log.i("OKHttp", "${it.value}")
-                }
-            }
-        }
+        setObservers()
 
     }
 
@@ -62,8 +42,35 @@ class MainActivity : AppCompatActivity() {
             binding.btnConvert.isEnabled = binding.tilValue.text.isNotBlank()
         }
         binding.btnConvert.setOnClickListener {
-            Log.i("MyTag", binding.tilValue.text)
+            it.hideSoftKeyboard()
+
+            val coinsToExchange = "${binding.tilFrom.text}-${binding.tilTo.text}"
+            viewModel.getExchangeValues(coinsToExchange)
         }
     }
 
+    private fun setObservers() {
+        viewModel.state.observe(this){
+            when (it) {
+                MainViewModel.State.Loading -> loadingDialog.show()
+                is MainViewModel.State.Error -> {
+                    loadingDialog.dismiss()
+                    createDialog {
+                        setMessage(it.error.message)
+                    }.show()
+                }
+                is MainViewModel.State.Success -> {
+                    loadingDialog.dismiss()
+                    onSuccess(it)
+                }
+            }
+        }
+    }
+
+    private fun onSuccess(exchange: MainViewModel.State.Success) {
+        val result = exchange.value.bid * binding.tilValue.text.toDouble()
+        val coinFinal = Coin.values().find { it.name == binding.tilTo.text } ?: Coin.BRL
+
+        binding.tvResult.text = result.formatCurrency(coinFinal.locale)
+    }
 }

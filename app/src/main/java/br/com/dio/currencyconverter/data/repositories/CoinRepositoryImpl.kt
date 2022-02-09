@@ -10,5 +10,4 @@ class CoinRepositoryImpl(private val service: AwesomeService): CoinRepository {
         val exchange = exchangeValue.values.first()
         emit(exchange)
     }
-
 }
