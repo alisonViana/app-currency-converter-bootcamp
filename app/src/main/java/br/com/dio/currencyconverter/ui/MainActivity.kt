@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.core.widget.doAfterTextChanged
+import br.com.dio.currencyconverter.core.extensions.createDialog
+import br.com.dio.currencyconverter.core.extensions.createProgressDialog
 import br.com.dio.currencyconverter.core.extensions.text
 import br.com.dio.currencyconverter.data.model.Coin
 
@@ -16,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val viewModel by viewModel<MainViewModel>()
+    private val loadingDialog by lazy { createProgressDialog() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +26,24 @@ class MainActivity : AppCompatActivity() {
 
         setAdapters()
         setListeners()
+
+        viewModel.getExchangeValues("USD-BRL")
+        viewModel.state.observe(this){
+            when (it) {
+                MainViewModel.State.Loading -> loadingDialog.show()
+                is MainViewModel.State.Error -> {
+                    loadingDialog.dismiss()
+                    createDialog {
+                        setMessage(it.error.message)
+                    }.show()
+                }
+                is MainViewModel.State.Success -> {
+                    loadingDialog.dismiss()
+                    Log.i("OKHttp", "${it.value}")
+                }
+            }
+        }
+
     }
 
     private fun setAdapters() {
