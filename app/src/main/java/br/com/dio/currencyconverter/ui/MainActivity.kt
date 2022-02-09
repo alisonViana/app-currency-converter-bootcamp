@@ -69,8 +69,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun onSuccess(exchange: MainViewModel.State.Success) {
         val result = exchange.value.bid * binding.tilValue.text.toDouble()
-        val coinFinal = Coin.values().find { it.name == binding.tilTo.text } ?: Coin.BRL
+        val coin = Coin.getByName(exchange.value.codein)
 
-        binding.tvResult.text = result.formatCurrency(coinFinal.locale)
+        binding.tvResult.text = result.formatCurrency(coin.locale)
     }
 }

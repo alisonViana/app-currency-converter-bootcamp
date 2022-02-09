@@ -24,5 +24,9 @@ enum class Coin(val description: String, val locale: Locale) {
     INR("Rúpia Indiana", Locale("hi", "IN")),
     PEN("Sol do Peru", Locale("es", "PE")),
     XRP("XRP", Locale.US),
-    KRW("Won Sul-Coreano", Locale.KOREA)
+    KRW("Won Sul-Coreano", Locale.KOREA);
+
+    companion object {
+        fun getByName(name: String) = values().find { it.name == name } ?: BRL
+    }
 }
