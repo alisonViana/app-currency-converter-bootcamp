@@ -1,12 +1,15 @@
 package br.com.dio.currencyconverter.data.di
 
 import android.util.Log
+import br.com.dio.currencyconverter.data.database.ExchangeDatabase
 import br.com.dio.currencyconverter.data.repositories.CoinRepository
 import br.com.dio.currencyconverter.data.repositories.CoinRepositoryImpl
 import br.com.dio.currencyconverter.data.services.AwesomeService
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidApplication
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -18,7 +21,7 @@ object DataModule {
     private const val HTTP_TAG = "OKHttp"
 
     fun load() {
-        loadKoinModules(networkModules() + repositoryModules())
+        loadKoinModules(networkModules() + repositoryModules() + databaseModules())
     }
 
     // single - o koin devolve sempre a mesma instância
@@ -50,9 +53,15 @@ object DataModule {
         }
     }
 
+    private fun databaseModules(): Module {
+        return module {
+            single { ExchangeDatabase.getInstance(androidContext()).exchangeDao }
+        }
+    }
+
     private fun repositoryModules(): Module {
         return module {
-            single<CoinRepository> { CoinRepositoryImpl(get()) }
+            single<CoinRepository> { CoinRepositoryImpl(get(), get()) }
         }
     }
 

@@ -6,4 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface CoinRepository {
 
     suspend fun getExchangeValues(coins: String): Flow<ExchangeResponseValue>
+    suspend fun getAll(): Flow<List<ExchangeResponseValue>>
+    suspend fun insert(exchange: ExchangeResponseValue)
 }
