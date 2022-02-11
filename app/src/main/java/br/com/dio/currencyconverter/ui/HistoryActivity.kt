@@ -23,6 +23,7 @@ class HistoryActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setAdapter()
+        getHistoryList()
         setObserve()
     }
 
@@ -36,6 +37,10 @@ class HistoryActivity : AppCompatActivity() {
         binding.rvList.addItemDecoration(
             DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL)
         )
+    }
+
+    private fun getHistoryList() {
+        viewModel.getExchangeList()
     }
 
     private fun setObserve() {

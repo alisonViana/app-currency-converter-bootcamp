@@ -13,6 +13,7 @@ class SaveExchangeUseCase(
     override suspend fun execute(param: ExchangeResponseValue): Flow<Unit> {
         return flow{
             repository.insert(param)
+            emit(Unit)
         }
     }
 }

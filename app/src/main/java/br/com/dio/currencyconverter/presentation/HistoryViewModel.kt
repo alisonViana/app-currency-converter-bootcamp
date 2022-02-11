@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class HistoryViewModel(
     private val listExchangeUseCase: ListExchangeUseCase
-): ViewModel(), LifecycleObserver {
+): ViewModel() {
 
     private val _state = MutableLiveData<State>()
     val state: LiveData<State> = _state

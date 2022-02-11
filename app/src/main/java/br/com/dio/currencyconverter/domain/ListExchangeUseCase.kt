@@ -11,8 +11,6 @@ class ListExchangeUseCase(
 ): UseCase.NoParam<List<ExchangeResponseValue>>() {
 
     override suspend fun execute(): Flow<List<ExchangeResponseValue>> {
-        return flow {
-            repository.getAll()
-        }
+        return repository.getAll()
     }
 }

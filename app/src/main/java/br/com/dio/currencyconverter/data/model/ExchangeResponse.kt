@@ -2,6 +2,7 @@ package br.com.dio.currencyconverter.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
 typealias ExchangeResponse = HashMap<String, ExchangeResponseValue>
 
@@ -19,6 +20,6 @@ data class ExchangeResponseValue (
     val bid: Double,
     val ask: Double,
     val timestamp: String,
-    val createDate: String
+    @SerializedName("create_date") val createDate: String
 )
 
