@@ -36,6 +36,6 @@ class HistoryViewModel(
     sealed class State {
         object Loading: State()
         data class Error(val error: Throwable): State()
-        data class Success(val exchange: List<ExchangeResponseValue>): State()
+        data class Success(val listExchange: List<ExchangeResponseValue>): State()
     }
 }

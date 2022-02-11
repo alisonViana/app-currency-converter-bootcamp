@@ -1,9 +1,13 @@
 package br.com.dio.currencyconverter.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ArrayAdapter
 import androidx.core.widget.doAfterTextChanged
+import br.com.dio.currencyconverter.R
 import br.com.dio.currencyconverter.core.extensions.*
 import br.com.dio.currencyconverter.data.model.Coin
 import br.com.dio.currencyconverter.databinding.ActivityMainBinding
@@ -16,14 +20,39 @@ class MainActivity : AppCompatActivity() {
     private val viewModel by viewModel<MainViewModel>()
     private val loadingDialog by lazy { createProgressDialog() }
 
+    private var enableSaveButton = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
 
         setAdapters()
         setListeners()
         setObservers()
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_history -> {
+                startActivity(Intent(this, HistoryActivity::class.java))
+            }
+            R.id.action_save -> {
+                if (enableSaveButton) {
+                    val value = viewModel.state.value
+                    (value as? MainViewModel.State.Success)?.let {
+                        viewModel.saveExchange(it.value)
+                    }
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setAdapters() {
@@ -40,7 +69,9 @@ class MainActivity : AppCompatActivity() {
     private fun setListeners() {
         binding.tilValue.editText?.doAfterTextChanged {
             binding.btnConvert.isEnabled = binding.tilValue.text.isNotBlank()
+            enableSaveButton = false
         }
+
         binding.btnConvert.setOnClickListener {
             it.hideSoftKeyboard()
 
@@ -61,7 +92,14 @@ class MainActivity : AppCompatActivity() {
                 }
                 is MainViewModel.State.Success -> {
                     loadingDialog.dismiss()
+                    enableSaveButton = true
                     onSuccess(it)
+                }
+                MainViewModel.State.Saved -> {
+                    loadingDialog.dismiss()
+                    createDialog {
+                        setMessage("Item salvo com sucesso!")
+                    }.show()
                 }
             }
         }

@@ -22,13 +22,14 @@
         app:layout_constraintGuide_end="@dimen/layout_extra_padding"
         />
 
-    <Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:title="@string/app_name"
+        app:title="@string/app_name"
+        app:menu="@menu/menu_main"
         />
 
     <com.google.android.material.textfield.TextInputLayout

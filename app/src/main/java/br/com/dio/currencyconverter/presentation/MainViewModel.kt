@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.dio.currencyconverter.data.model.ExchangeResponseValue
 import br.com.dio.currencyconverter.domain.GetExchangeValueUseCase
+import br.com.dio.currencyconverter.domain.SaveExchangeUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -14,7 +15,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val getExchangeValueUseCase: GetExchangeValueUseCase
+    private val getExchangeValueUseCase: GetExchangeValueUseCase,
+    private val saveExchangeUseCase: SaveExchangeUseCase
 ):  ViewModel() {
 
     private val _state = MutableLiveData<State>()
@@ -36,9 +38,26 @@ class MainViewModel(
         }
     }
 
+    fun saveExchange(exchange: ExchangeResponseValue) {
+        viewModelScope.launch {
+            saveExchangeUseCase(exchange)
+                .flowOn(Dispatchers.Main)
+                .onStart {
+                    _state.value = State.Loading
+                }
+                .catch {
+                    _state.value = State.Error(it)
+                }
+                .collect {
+                    _state.value = State.Saved
+                }
+        }
+    }
+
     sealed class State() {
         object Loading: State()
-        data class Success(val value: ExchangeResponseValue): State()  //val value: Any - classe genérica
+        object Saved: State()
+        data class Success(val value: ExchangeResponseValue): State()
         data class Error(val error: Throwable): State()
     }
 }

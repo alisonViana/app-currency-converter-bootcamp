@@ -7,5 +7,7 @@
     <string name="label_convert_from">Converter de:</string>
     <string name="label_convert_to">Para:</string>
     <string name="label_convert">Converter</string>
+    <string name="label_history">Histórico</string>
+    <string name="label_save">Salvar</string>
 
 </resources>
